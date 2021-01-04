@@ -54,21 +54,24 @@ public class Utilities {
                 .replace("%timestamp%", dateFormat)));
         if(bio.hasData()) {
             hoverText.append(newLine);
-            hoverText.append(formator.colorize("&fAbout " + p.getDisplayName() + "&r&f:"));
-            if(bio.getType() != null) {
-                hoverText.append(newLine);
-                if (bio.getYear() != null)
-                    hoverText.append(formator.colorize("&3" + bio.getType() + " &7(" + bio.getYear() + ")"));
-                else
-                    hoverText.append(formator.colorize("&3" + bio.getType()));
-            }
-            if(bio.getSchool() != null) {
-                hoverText.append(newLine);
-                hoverText.append(formator.colorize("&f" + bio.getSchool()));
-            }
             if(bio.getPronouns() != null) {
+                hoverText.append(formator.colorize("&7Sent by &f" + p.getDisplayName() + " &r&7(" + bio.getPronouns() + ")."));
+            } else {
+                hoverText.append(formator.colorize("&7Sent by " + p.getDisplayName() + "&r&7."));
+            }
+
+            StringBuilder bioString = new StringBuilder();
+            if(bio.getType() != null)
+                bioString.append(formator.colorize("&3" + bio.getType()));
+            if(bio.getYear() != null)
+                bioString.append(formator.colorize(" &7(" + bio.getYear() + ")"));
+            if(bio.getSchool() != null)
+                bioString.append(formator.colorize(" &8• &r&f" + bio.getSchool()));
+
+            String str = bioString.toString();
+            if(!str.isEmpty()) {
                 hoverText.append(newLine);
-                hoverText.append(formator.colorize("&7" + bio.getPronouns()));
+                hoverText.append(str);
             }
         }
         return new ComponentBuilder(message).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText.create())).create();

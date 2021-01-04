@@ -35,6 +35,6 @@ public class Bio {
     private String pronouns;
 
     public boolean hasData() {
-        return type != null && year != null && school != null && pronouns != null;
+        return type != null || year != null || school != null || pronouns != null;
     }
 }

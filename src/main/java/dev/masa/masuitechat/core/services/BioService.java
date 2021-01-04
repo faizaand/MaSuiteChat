@@ -2,6 +2,7 @@ package dev.masa.masuitechat.core.services;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.table.TableUtils;
 import dev.masa.masuitechat.bungee.MaSuiteChat;
 import dev.masa.masuitechat.core.models.Bio;
@@ -27,10 +28,13 @@ public class BioService {
     }
 
     @SneakyThrows
-    public Bio updateBio(Bio bio) {
-        bioDao.createOrUpdate(bio);
+    public void updateBio(Bio bio) {
+        DeleteBuilder<Bio, Integer> delb = bioDao.deleteBuilder();
+        delb.where().in("owner", bio.getOwner());
+        delb.delete();
+
+        bioDao.create(bio);
         bios.put(bio.getOwner(), bio);
-        return bio;
     }
 
     @SneakyThrows

@@ -21,7 +21,7 @@ public class BioCommand extends BaseCommand {
 
     private MaSuiteChat plugin;
     private Map<UUID, Bio> editingBios = new HashMap<>();
-
+    
     private String[] types = new String[]{
             "Student", "Alum", "Prefrosh", "Prospective", "Visitor", "Faculty", "Staff"
     };
@@ -44,7 +44,8 @@ public class BioCommand extends BaseCommand {
     public void bioCommand(Player player) {
         editingBios.put(player.getUniqueId(), new Bio(player.getUniqueId()));
 
-        player.sendMessage(ChatColor.LIGHT_PURPLE + "--------------");
+        player.sendMessage(ChatColor.RESET + "");
+        player.sendMessage(ChatColor.RESET + "");
         player.sendMessage(PREFIX + "You are now editing your bio. Others will be able to hover over your name to see it!");
 
         // Step 1: ask type
@@ -68,12 +69,17 @@ public class BioCommand extends BaseCommand {
 
         // Step 2: ask year OR pronouns (if they're not Cornell affiliated)
         if(type.equals("Student") || type.equals("Alum") || type.equals("Prefrosh")) {
+            player.sendMessage(ChatColor.RESET + "");
+            player.sendMessage(ChatColor.RESET + "");
             player.sendMessage(PREFIX + "Cool! What's your graduation year?");
             player.sendMessage(PREFIX + ChatColor.translateAlternateColorCodes('&', "&fType &6/gradyear <year>&f, where &6<year> &fis your year. For example, /year 2021."));
             player.sendMessage(PREFIX + "To skip this step, type " + ChatColor.GOLD + "/gradyear skip");
         } else {
-            player.sendMessage(PREFIX + "Almost there! Lastly, what are your pronouns?");
+            player.sendMessage(ChatColor.RESET + "");
+            player.sendMessage(ChatColor.RESET + "");
+            player.sendMessage(PREFIX + "Alright! What are your pronouns?");
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&fType &a/pronouns <pronouns>&f, where &a<pronouns> &fare your pronouns. For example, /year they/them sets your pronouns to they/them."));
+            player.sendMessage(PREFIX + "To skip this step, type " + ChatColor.GREEN + "/pronouns skip");
         }
     }
 
@@ -102,6 +108,8 @@ public class BioCommand extends BaseCommand {
         }
 
         // Let them select a school.
+        player.sendMessage(ChatColor.RESET + "");
+        player.sendMessage(ChatColor.RESET + "");
         player.sendMessage(PREFIX + "Awesome! Now, which school or college are you affiliated with?");
         for (String school : schools) {
             player.spigot().sendMessage(_generateSchool(school));
@@ -123,6 +131,8 @@ public class BioCommand extends BaseCommand {
         }
 
         // Ask them for their pronouns.
+        player.sendMessage(ChatColor.RESET + "");
+        player.sendMessage(ChatColor.RESET + "");
         player.sendMessage(PREFIX + "Almost there! Lastly, what are your pronouns?");
         player.sendMessage(PREFIX + ChatColor.translateAlternateColorCodes('&', "&fType &a/pronouns <pronouns>&f, where &a<pronouns> &fare your pronouns. For example, /year they/them sets your pronouns to they/them."));
         player.sendMessage(PREFIX + "To skip this step, type " + ChatColor.GREEN + "/pronouns skip");
@@ -149,11 +159,14 @@ public class BioCommand extends BaseCommand {
             bio.setPronouns(pronouns);
         }
 
+        if(bio.getSchool().equalsIgnoreCase("Skip this")) bio.setSchool(null);
+
         new BukkitPluginChannel(plugin, player, "MaSuiteChat", "Bio", player.getUniqueId().toString(), orSkip(bio.getType()), orSkip(bio.getYear()), orSkip(bio.getSchool()), orSkip(bio.getPronouns())).send();
         removeEditing(player.getUniqueId());
+        player.sendMessage(ChatColor.RESET + "");
+        player.sendMessage(ChatColor.RESET + "");
         player.sendMessage(PREFIX + "All done! Your bio is visible when people hover over your name in chat.");
-        player.sendMessage(PREFIX + "If you want to edit your bio again, just type" + ChatColor.LIGHT_PURPLE + "/bio" + ChatColor.WHITE + ".");
-        player.sendMessage(ChatColor.LIGHT_PURPLE + "--------------");
+        player.sendMessage(PREFIX + "If you want to edit your bio again, just type " + ChatColor.LIGHT_PURPLE + "/bio" + ChatColor.WHITE + ".");
     }
 
     public void removeEditing(UUID uid) {
@@ -169,7 +182,7 @@ public class BioCommand extends BaseCommand {
 
     private TextComponent _generateSchool(String school) {
         TextComponent typeCmp = new TextComponent(ChatColor.WHITE + "* " + ChatColor.BLUE + school);
-        typeCmp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent(ChatColor.WHITE + "Click here to select  " + ChatColor.BLUE + school + ChatColor.WHITE + ".")}));
+        typeCmp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent(ChatColor.WHITE + "Click here to select " + ChatColor.BLUE + school + ChatColor.WHITE + ".")}));
         typeCmp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bioschool " + school));
         return typeCmp;
     }
