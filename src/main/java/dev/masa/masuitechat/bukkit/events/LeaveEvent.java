@@ -15,6 +15,7 @@ public class LeaveEvent implements Listener {
 
     @EventHandler
     public void onLeave(PlayerQuitEvent e) {
+        plugin.bioCommand.removeEditing(e.getPlayer().getUniqueId());
         e.setQuitMessage(null);
     }
 }

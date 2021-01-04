@@ -1,5 +1,6 @@
 package dev.masa.masuitechat.bukkit;
 
+import com.google.common.collect.ImmutableList;
 import dev.masa.masuitechat.bukkit.commands.*;
 import dev.masa.masuitechat.bukkit.events.AfkEvents;
 import dev.masa.masuitechat.bukkit.events.ChatEvent;
@@ -25,6 +26,8 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
 
     private static Chat chat = null;
 
+    public BioCommand bioCommand;
+
     public BukkitConfiguration config = new BukkitConfiguration();
     public List<UUID> afkList = new ArrayList<>();
 
@@ -33,6 +36,8 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         config.create(this, "chat", "config.yml");
+
+        bioCommand = new BioCommand(this);
 
         // Load listeners
         getServer().getPluginManager().registerEvents(new JoinEvent(this), this);
@@ -66,6 +71,7 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
         manager.registerCommand(new ReplyCommand(this));
         manager.registerCommand(new MailCommand(this));
         manager.registerCommand(new MsgStaffCommand(this));
+        manager.registerCommand(new BioCommand(this));
         CommandManagerUtil.registerMaSuitePlayerCommandCompletion(manager);
     }
 

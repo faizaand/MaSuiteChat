@@ -29,6 +29,9 @@ public class JoinEvent implements Listener {
             MaSuiteChat.players.put(e.getPlayer().getUniqueId(), plugin.config.load("chat", "chat.yml")
                     .getString("channels." + e.getTarget().getName().toLowerCase() + ".defaultChannel"));
 
+            // cache bio
+            MaSuiteChat.bioService.getBio(e.getPlayer().getUniqueId());
+
             if (plugin.config.load("chat", "messages.yml").getBoolean("first-join.enabled"))
                 if (plugin.getApi().getPlayerService().getPlayer(e.getPlayer().getUniqueId()) == null) {
                     plugin.utils.broadcast(plugin.config.load("chat", "messages.yml")

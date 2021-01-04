@@ -26,5 +26,6 @@ public class LeaveEvent implements Listener {
             );
         }
         MaSuiteChat.players.remove(e.getPlayer().getUniqueId());
+        MaSuiteChat.bioService.invalidateCache(e.getPlayer().getUniqueId());
     }
 }

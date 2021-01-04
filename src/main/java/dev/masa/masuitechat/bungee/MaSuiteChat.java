@@ -1,6 +1,8 @@
 package dev.masa.masuitechat.bungee;
 
 import dev.masa.masuitechat.core.controllers.MailController;
+import dev.masa.masuitechat.core.models.Bio;
+import dev.masa.masuitechat.core.services.BioService;
 import dev.masa.masuitechat.core.services.MailService;
 import dev.masa.masuitechat.bungee.channels.*;
 import dev.masa.masuitechat.bungee.events.JoinEvent;
@@ -49,6 +51,8 @@ public class MaSuiteChat extends Plugin implements Listener {
     @Getter
     private MailService mailService;
 
+    public static BioService bioService;
+
     @Override
     public void onEnable() {
         getProxy().getPluginManager().registerListener(this, this);
@@ -58,6 +62,7 @@ public class MaSuiteChat extends Plugin implements Listener {
         config.create(this, "chat", "chat.yml");
 
         mailService = new MailService(this);
+        bioService = new BioService(this);
 
         // Load actions, servers and channels
         ServerManager.loadServers();
@@ -139,6 +144,30 @@ public class MaSuiteChat extends Plugin implements Listener {
             String subchannel = in.readUTF();
             if (subchannel.equals("MaSuiteChat")) {
                 String childchannel = in.readUTF();
+
+                if(childchannel.equals("Bio")) {
+                    ProxiedPlayer p = getProxy().getPlayer(UUID.fromString(in.readUTF()));
+                    if (p == null) {
+                        return;
+                    }
+                    String type = in.readUTF();
+                    String year = in.readUTF();
+                    String school = in.readUTF();
+                    String pronouns = in.readUTF();
+
+                    if(type.equals("skip") && year.equals("skip") && school.equals("skip") && pronouns.equals("skip")) {
+                        return;
+                    }
+
+                    Bio bio = new Bio(p.getUniqueId());
+                    if(!type.equals("skip")) bio.setType(type);
+                    if(!year.equals("skip")) bio.setYear(year);
+                    if(!school.equals("skip")) bio.setSchool(school);
+                    if(!pronouns.equals("skip")) bio.setPronouns(pronouns);
+
+                    bioService.updateBio(bio);
+                }
+
                 if (childchannel.equals("Chat")) {
                     ProxiedPlayer p = getProxy().getPlayer(UUID.fromString(in.readUTF()));
                     if (p == null) {

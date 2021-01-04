@@ -1,20 +1,25 @@
 package dev.masa.masuitechat.bungee;
 
 import dev.masa.masuitechat.bungee.objects.Group;
+import dev.masa.masuitechat.core.models.Bio;
 import dev.masa.masuitecore.bungee.chat.Formator;
 import dev.masa.masuitecore.bungee.chat.MDChat;
 import dev.masa.masuitecore.core.configuration.BungeeConfiguration;
+import lombok.val;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.chat.ComponentSerializer;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
 public class Utilities {
+
+    public static TextComponent newLine = new TextComponent(ComponentSerializer.parse("{text: \"\n\"}"));
 
     public static BaseComponent[] chatFormat(ProxiedPlayer p, String msg, String channel) {
 
@@ -41,9 +46,31 @@ public class Utilities {
         SimpleDateFormat customDate = new SimpleDateFormat(config.load("chat", "messages.yml").getString("timestamp-format"));
         customDate.setTimeZone(TimeZone.getTimeZone(config.load("chat", "messages.yml").getString("timestamp-timezone")));
         String dateFormat  = customDate.format(new Date());
-        return new ComponentBuilder(message).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                new ComponentBuilder(formator.colorize(config.load("chat", "messages.yml")
-                        .getString("message-hover-actions")
-                        .replace("%timestamp%", dateFormat))).create())).create();
+
+        Bio bio = MaSuiteChat.bioService.getBio(p.getUniqueId());
+
+        ComponentBuilder hoverText = new ComponentBuilder(formator.colorize(config.load("chat", "messages.yml")
+                .getString("message-hover-actions")
+                .replace("%timestamp%", dateFormat)));
+        if(bio.hasData()) {
+            hoverText.append(newLine);
+            hoverText.append(formator.colorize("&fAbout " + p.getDisplayName() + "&r&f:"));
+            if(bio.getType() != null) {
+                hoverText.append(newLine);
+                if (bio.getYear() != null)
+                    hoverText.append(formator.colorize("&3" + bio.getType() + " &7(" + bio.getYear() + ")"));
+                else
+                    hoverText.append(formator.colorize("&3" + bio.getType()));
+            }
+            if(bio.getSchool() != null) {
+                hoverText.append(newLine);
+                hoverText.append(formator.colorize("&f" + bio.getSchool()));
+            }
+            if(bio.getPronouns() != null) {
+                hoverText.append(newLine);
+                hoverText.append(formator.colorize("&7" + bio.getPronouns()));
+            }
+        }
+        return new ComponentBuilder(message).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText.create())).create();
     }
 }

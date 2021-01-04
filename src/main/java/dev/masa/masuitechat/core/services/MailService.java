@@ -4,6 +4,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.table.TableUtils;
 import dev.masa.masuitechat.bungee.MaSuiteChat;
+import dev.masa.masuitechat.core.models.Bio;
 import dev.masa.masuitechat.core.models.Mail;
 import lombok.Getter;
 import lombok.SneakyThrows;
